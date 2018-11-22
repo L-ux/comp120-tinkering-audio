@@ -13,26 +13,22 @@ def generate_note(steps, duration, name, wave_type):
         note.setparams((CHANNELS, BYTE_PER_SAMPLE, SAMPLE_RATE, sample_length,
                         "NONE", "not compressed"))
         samples = []
+        class_holder = waves()
         if wave_type == "perfect":
             for sample in range(sample_length):
-                class_holder = waves()
                 to_pack = class_holder.perfect_wave(sample, frequency)
-                packed_value = struct.pack('h', int(to_pack))
-                for j in range(CHANNELS):
-                    samples.append(packed_value)
+                samples.append(pack_value(to_pack))
         elif wave_type == "square":
             for sample in range(sample_length):
-                class_holder = waves()
                 to_pack = class_holder.square_wave(sample, frequency)
-                packed_value = struct.pack('h', int(to_pack))
-                for j in range(CHANNELS):
-                    samples.append(packed_value)
+                samples.append(pack_value(to_pack))
         elif wave_type == "saw":
             for sample in range(sample_length):
-                class_holder = waves()
                 to_pack = class_holder.saw_wave(sample, frequency)
-                packed_value = struct.pack('h', int(to_pack))
-                for j in range(CHANNELS):
-                    samples.append(packed_value)
+                samples.append(pack_value(to_pack))
         note.writeframes(b''.join(samples))
         return note, frequency
+
+def pack_value(to_pack):
+    packed_value = struct.pack('h', int(to_pack))
+    return packed_value

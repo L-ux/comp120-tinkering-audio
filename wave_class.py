@@ -7,9 +7,9 @@ class waves():
                          (sample_number / SAMPLE_RATE)) / math.pi) * MAX_VOL
         return wave
 
-    def saw_wave(self, sample_number, frequency): 
+    def saw_wave(self, sample_number, frequency):
         wave = 0
-        for multiplier in range(1,6):
+        for multiplier in range(1, 6):
             wave += (math.sin(multiplier * 2.0 * math.pi * frequency *
                               (sample_number / SAMPLE_RATE)) /
                      (multiplier * math.pi)) * MAX_VOL
@@ -17,7 +17,7 @@ class waves():
 
     def square_wave(self, sample_number, frequency):
         wave = 0
-        for multiplier in range(1,8,2):
+        for multiplier in range(1, 8, 2):
             wave += (math.sin(multiplier * 2.0 * math.pi * frequency *
                               (sample_number / SAMPLE_RATE)) /
                      (multiplier * math.pi)) * MAX_VOL
