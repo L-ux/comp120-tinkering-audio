@@ -1,6 +1,7 @@
 # comp-120-tinkering-audio Contact 3 - Melody Generation
 
 ***Joshua Grillo***
+
 *Github_ID: **L-ux***
 
 ## How to run the program
