@@ -1,8 +1,11 @@
 import sys
-import pygame
-from sound_generator import generate_note
+from sound_generator import *
 from name_getter import get_name
-from pygame import *
+import pygame
+from pygame import mixer
+from pygame.locals import *
+from notation_worker import *
+from name_getter import frequency_getter
 
 mixer.pre_init()
 pygame.init()
@@ -10,7 +13,8 @@ pygame.init()
 display = pygame.display.set_mode((150,50))
 clock = pygame.time.Clock()
 
-'''
+# just some notes i used along the way
+''' 
  a3 is 0 steps as we are using this as our baseline, we want to go down to 
         c2 and up to c5
  c2 = -21, c3 = -9 steps c4(m) = +3 steps, c5 = + 15 steps
@@ -26,70 +30,43 @@ get the number of times needed to get into the 0,11 range, and that will
 '''
 
 satisfied = False
-while not satisfied:
+while not satisfied:  # asks for input to determine what wave type to make
     for event in pygame.event.get():
-        if event.type == KEYDOWN and event.key == K_1:
+        if event.type == KEYDOWN and event.key == K_1:  # number 1 pressed
             wave_type = "perfect"
             satisfied = True
-        elif event.type == KEYDOWN and event.key == K_2:
+        elif event.type == KEYDOWN and event.key == K_2:  # number 2 pressed
             wave_type = "square"
             satisfied = True
-        elif event.type == KEYDOWN and event.key == K_3:
+        elif event.type == KEYDOWN and event.key == K_3:  # number 3 pressed
             wave_type = "saw"
             satisfied = True
 
-
-notes_set = set()
-duration = 1
-
-
+'''duration = 1
 for steps in range(-21, 16):  # generates and saves all notes from c2 to c5
     name = get_name(steps)
-    new_note, freq = generate_note(steps, duration, name, wave_type)
-    notes_set.add(name)
-    print(name,freq)
+    lsit = [(steps, duration)]
+    generate_note(lsit, name, wave_type)'''
 
+# Plays a chosen random melody a few times
+all_notes = []
+for i in range(14):
+    melody = random_melody_getter()
+    for i in range(len(melody)):
+        all_notes.append(melody[i])
+        # uncommenting this chunk will play the melody before saving it
+        '''plays_number = melody[i][1]
+        while plays_number > 0:
+            mixer.music.load(melody[i][0])
+            mixer.music.play()
+            clock.tick(5)
+            plays_number -= 1'''
 
+# The code from here saves the melody to a single .wav file, because I never
+#  found out how to use .ogg files
+list_for_notes = []
+for i in range(len(all_notes)):
+    steps = frequency_getter(all_notes[i][0])
+    list_for_notes.append((steps, all_notes[i][1]))
 
-
-'''
-note_list = []
-note_list.append("C4.wav")
-note_list.append("C5.wav")
-note_list.append("C2.wav")
-for i in range(len(note_list)):
-    clock.tick(5)
-    mixer.music.load(note_list[i])
-    mixer.music.play()
-    clock.tick(5)
-'''
-
-''' # this stuff just has play/pause functions... 
-game_state_list = {"IDLE": 0, "PLAYING": 1, "PAUSED": 2}
-
-game_state = game_state_list["IDLE"]
-
-
-mixer.music.load("1117.wav")
-
-while True:
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_SPACE:
-                if game_state == game_state_list["IDLE"]:
-                    mixer.music.play(-1)
-                    game_state  = game_state_list["PLAYING"]
-                elif game_state == game_state_list["PLAYING"]:
-                    mixer.music.pause()
-                    game_state = game_state_list["PAUSED"]
-                elif game_state == game_state_list["PAUSED"]:
-                    mixer.music.unpause()
-                    game_state = game_state_list["PLAYING"]
-            elif event.key == K_BACKSPACE:
-                game_state = game_state_list["IDLE"]
-                mixer.music.stop()
-            elif event.key == K_ESCAPE:
-                quit()
-                sys.exit()
-    pygame.display.flip()
-    clock.tick(30)'''
+generate_note(list_for_notes, "Melody.wav", wave_type)
